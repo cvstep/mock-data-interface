@@ -1,0 +1,2300 @@
+swagger: '2.0'
+info:
+  version: 0.1.0
+  title: Mock Data Interface
+  description: |
+    Mock Data Interface for The National Alliance web assets
+
+    ## Authentication
+
+    Mock logon ticket `c35a13468062a440d210e9c6e9daaa8f000152cb`
+
+    ## HTTP Verbs
+    [RESTful](http://en.wikipedia.org/wiki/Representational_state_transfer).
+    Every endpoint supports one or more of four different http verbs.
+
+    GET requests fetch information about an object
+    POST requests create objects
+    PUT requests update objects
+    DELETE requests will delete objects.
+    GET, PUT, DELETE, HEAD, and PATCH actions should be idempotent.
+  contact:
+    name: TNA Web Team
+    url: 'http://www.scic.com'
+    email: marketing@scic.com
+  license:
+    name: UNLICENSED
+    url: 'http://www.scic.com'
+basePath: /
+produces:
+  - application/json
+consumes:
+  - application/json
+schemes:
+  - http
+parameters:
+  participantId:
+    name: participantId
+    in: path
+    description: A unique participant identifier is created for each participant.
+    required: true
+    type: integer
+    format: int32
+  username:
+    name: username
+    in: path
+    description: >
+      When a participant is created they either pick a username or if it is a
+      system generated account the username is created automatically
+
+      from their first and last names.
+    required: true
+    type: string
+  userinfo:
+    name: userinfo
+    in: path
+    description: >
+      The userinfo object is either the email address of the participant or the
+      username address of the participant.
+    required: true
+    type: string
+  eventCode:
+    name: eventCode
+    in: path
+    description: >
+      The Event Code is a unique identifier for events (courses) in the form
+      {YYYY}{MM}{DD}{State}{ProgramCode} Example: 20141113AZRAR
+    required: true
+    type: string
+  registrationId:
+    name: registrationId
+    in: path
+    description: The registration identifier for the participant and event
+    required: true
+    format: int32
+    type: integer
+tags:
+  - name: Authentication
+    description: ''
+  - name: Participant
+    description: ''
+  - name: Event
+    description: ''
+  - name: Learning Management System
+    description: ''
+  - name: Continuing Education
+    description: ''
+  - name: Webinar
+    description: ''
+  - name: Archive
+    description: ''
+  - name: Static
+    description: ''
+  - name: Magento
+    description: ''
+  - name: Marketing Cloud
+    description: ''
+responses:
+  '400':
+    description: 400 Bad Request
+    schema:
+      $ref: '#/definitions/Default'
+  '401':
+    description: Unauthorized
+    schema:
+      $ref: '#/definitions/Default'
+  '404':
+    description: Item Not Found
+    schema:
+      $ref: '#/definitions/Default'
+  '405':
+    description: Validation exception
+    schema:
+      $ref: '#/definitions/Default'
+  '429':
+    description: Rate limit exceeded
+    schema:
+      $ref: '#/definitions/Default'
+  '500':
+    description: Internal server error
+    schema:
+      $ref: '#/definitions/Default'
+  '503':
+    description: Service unavailable
+    schema:
+      $ref: '#/definitions/Default'
+  NotFound:
+    description: Entity not found.
+    schema:
+      $ref: '#/definitions/Default'
+  IllegalInput:
+    description: Illegal input for operation.
+  GeneralError:
+    description: General Error
+    schema:
+      $ref: '#/definitions/Default'
+externalDocs:
+  description: Find more info here
+  url: 'http://www.scic.com'
+securityDefinitions:
+  logonTicket:
+    x-authorize: security/logonTicket.js
+    type: apiKey
+    in: query
+    name: logonTicket
+paths:
+  '/participants/{participantId}/archive-keywords':
+    get:
+      tags:
+        - Archive
+      security:
+        - logonTicket: []
+      summary: Get distinct archive keywords by participantId
+      operationId: getArchiveKeywords
+      consumes: []
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/participantId'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Keywords'
+        default:
+          description: OK
+          schema:
+            $ref: '#/definitions/Default'
+  '/participants/{participantId}/archive':
+    get:
+      tags:
+        - Archive
+      security:
+        - logonTicket: []
+      summary: Get archive strings by participantId
+      operationId: getArchive
+      consumes: []
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/participantId'
+        - name: pageSize
+          in: query
+          description: The size of a page to return
+          required: true
+          default: 10
+          minimum: 1
+          maximum: 100
+          type: integer
+          format: int32
+        - name: pageNumber
+          in: query
+          description: The page number to return
+          required: true
+          default: 1
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              type: string
+        default:
+          description: OK
+          schema:
+            $ref: '#/definitions/Default'
+    post:
+      tags:
+        - Archive
+      security:
+        - logonTicket: []
+      summary: Create document in participantId archive
+      operationId: postArchive
+      consumes:
+        - multipart/form-data
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/participantId'
+        - name: file
+          in: formData
+          description: Archive File
+          required: true
+          type: file
+        - name: title
+          in: formData
+          description: File title
+          required: true
+          type: string
+        - name: eventCode
+          in: formData
+          description: Archive File
+          required: true
+          type: string
+        - name: internalPath
+          in: formData
+          description: path
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        default:
+          description: OK
+          schema:
+            $ref: '#/definitions/Default'
+  /events:
+    get:
+      tags:
+        - Event
+      summary: Get all events
+      operationId: getEvents
+      consumes:
+        - application/json
+        - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: pageSize
+          in: query
+          description: The size of a page to return
+          required: true
+          default: 20
+          minimum: 1
+          maximum: 100
+          type: integer
+          format: int32
+        - name: pageNumber
+          in: query
+          description: The page number to return
+          required: true
+          default: 1
+          type: integer
+          format: int32
+        - name: request
+          in: body
+          description: JSON formatted search criteria
+          required: true
+          schema:
+            $ref: '#/definitions/ScheduleRequest'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Events'
+  '/events/{eventCode}':
+    get:
+      tags:
+        - Event
+      summary: Get event data by eventCode
+      operationId: getEvent
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/eventCode'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Event'
+  '/events/{eventCode}/seats':
+    get:
+      tags:
+        - Event
+      summary: Get number of seats available by eventCode
+      operationId: getEventSeatsInfo
+      consumes: []
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/eventCode'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: integer
+            format: int32
+  '/events/{eventCode}/waitlist/{participantId}':
+    post:
+      tags:
+        - Event
+      summary: Create a waitlist entry for user by eventCode
+      operationId: postEventWaitlist
+      consumes:
+        - application/json
+        - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/participantId'
+        - $ref: '#/parameters/eventCode'
+      responses:
+        '200':
+          description: OK
+  '/events/{eventCode}/ce':
+    get:
+      tags:
+        - Event
+      summary: Get continuing education approvals by eventCode filtered by state
+      operationId: getEventCE
+      consumes: []
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/eventCode'
+        - name: state
+          in: query
+          description: State
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/EventCeApproval'
+  /ce/guide:
+    get:
+      tags:
+        - Continuing Education
+      summary: 'Get approvals by state, program, or designation'
+      operationId: getCEGuides
+      consumes: []
+      produces:
+        - application/json
+      parameters:
+        - name: state
+          in: query
+          description: State to return the approvals for.
+          required: false
+          type: string
+        - name: program
+          in: query
+          description: Program.
+          required: false
+          type: string
+        - name: designation
+          in: query
+          description: Designation.
+          required: false
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/CEGuides'
+        default:
+          description: OK
+          schema:
+            $ref: '#/definitions/Default'
+  '/participants/{participantId}/affidavit':
+    post:
+      tags:
+        - Learning Management System
+      security:
+        - logonTicket: []
+      summary: Create affidavit in archive by participantId
+      operationId: postAffidavit
+      consumes:
+        - application/json
+        - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/participantId'
+        - name: affidavitForm
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Affdavit'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        default:
+          description: OK
+          schema:
+            $ref: '#/definitions/Default'
+  /events/webinars:
+    get:
+      tags:
+        - Webinar
+        - Learning Management System
+      summary: Get current webinar sessions
+      description: >
+        This function returns the list of webinar sessions for current and
+        future
+
+        webinars
+      operationId: getWebinarSessions
+      consumes: []
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/WebinarSessions'
+        default:
+          description: OK
+          schema:
+            $ref: '#/definitions/Default'
+  /events/webinars/scores:
+    post:
+      tags:
+        - Webinar
+        - Learning Management System
+      summary: Create webinar scores for registrationId
+      description: Save webinar scores
+      operationId: postWebinarScores
+      consumes:
+        - application/json
+        - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: WBScores
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/WBScores'
+      responses:
+        '200':
+          description: OK
+        default:
+          description: OK
+          schema:
+            $ref: '#/definitions/Default'
+  /events/online/scores:
+    post:
+      tags:
+        - Learning Management System
+      summary: Post self-paced course grades
+      description: Post Self-paced Courses
+      operationId: postOLScores
+      consumes: []
+      produces:
+        - application/json
+        - application/x-www-form-urlencoded
+      parameters:
+        - name: OLScores
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/OLScores'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        default:
+          description: OK
+          schema:
+            $ref: '#/definitions/Default'
+  /participants:
+    post:
+      tags:
+        - Participant
+      summary: Create new participant
+      description: >
+        Creates new participant. Perform necessary business operations like
+        sending welcome email.
+      operationId: createParticipant
+      consumes:
+        - application/json
+        - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: participantForm
+          in: body
+          description: URL-encoded form of Participant data.
+          required: true
+          schema:
+            $ref: '#/definitions/ParticipantForm'
+      responses:
+        '200':
+          description: |
+            **Return Value:**
+          schema:
+            type: object
+        default:
+          description: OK
+          schema:
+            $ref: '#/definitions/Default'
+  '/participants/{participantId}':
+    get:
+      tags:
+        - Participant
+      security:
+        - logonTicket: []
+      summary: Get Participant data by participantId
+      operationId: getUserData
+      consumes: []
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/participantId'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/Participant'
+        default:
+          description: OK
+          schema:
+            $ref: '#/definitions/Default'
+    put:
+      tags:
+        - Participant
+      security:
+        - logonTicket: []
+      summary: Update user data by participantId
+      operationId: updateParticipantData
+      consumes:
+        - application/json
+        - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/participantId'
+        - name: userForm
+          in: body
+          description: URL-encoded form of Participant data.
+          required: true
+          schema:
+            $ref: '#/definitions/ParticipantForm'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+  /participants/auth:
+    post:
+      description: Log the user on and returns the LogonToken.
+      tags:
+        - Authentication
+      summary: Login user by userinfo and password
+      operationId: authorize
+      consumes:
+        - application/json
+        - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: logonForm
+          in: body
+          description: userinfo and password in plain text.
+          required: true
+          schema:
+            type: object
+            properties:
+              userInfo:
+                description: >-
+                  Either the participants username or the participants email
+                  address
+                type: string
+              password:
+                type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              logonToken:
+                type: string
+    get:
+      description: >-
+        This function is designed to be used to logon users from links in emails
+        or other marketing materials. It is rather unsafe, but is included for
+        historical reasons.
+      tags:
+        - Authentication
+      security:
+        - logonTicket: []
+      summary: Get participantId by logonToken
+      operationId: getPIdByLogonToken
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              logonToken:
+                type: string
+              participantId:
+                type: integer
+                format: int32
+  /participants/auth/reset-password:
+    post:
+      tags:
+        - Authentication
+      summary: Start password reset process by participant email.
+      operationId: resetPassword
+      consumes:
+        - application/json
+        - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - name: resetForm
+          in: body
+          description: User password reset form.
+          required: true
+          schema:
+            type: object
+            properties:
+              userEmail:
+                type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+  '/participants/auth/{participantId}/LMSKey':
+    get:
+      tags:
+        - Authentication
+      summary: Get encrypted LMS logon key by participantId
+      description: >
+        This endpoint returns the encrypted logon key for the LMS given the
+        participantId. Example psuedo code for creating the link:
+
+        ```
+
+        GetTopClassLoginURL(int PID)
+          string login_url = "";
+            using (WebClient client = new WebClient())
+              string url = "$API_HOST$/participants/' + PID.ToString() + '/auth/LMSKey");
+              login_url = @"http://54.89.109.25/topclass/login.do?uid=" + client.DownloadString(url);
+              login_url = login_url.Replace("\"", string.Empty);
+          return login_url;
+        ```
+      operationId: getLMSKey
+      consumes: []
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/participantId'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            title: lmsKey
+            properties:
+              lmsKey:
+                type: string
+                description: >-
+                  The encrypted key used to create the automatic logon link for
+                  the learning management system
+        default:
+          description: OK
+          schema:
+            $ref: '#/definitions/Default'
+  '/participants/{participantId}/password':
+    put:
+      tags:
+        - Authentication
+      security:
+        - logonTicket: []
+      summary: Update user password by participantId
+      operationId: putPassword
+      consumes:
+        - application/json
+        - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/participantId'
+        - name: userPasswordForm
+          in: body
+          description: Password Form.
+          required: true
+          schema:
+            $ref: '#/definitions/UserPassword'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+  '/participants/{participantId}/orders':
+    post:
+      tags:
+        - Magento
+      security:
+        - logonTicket: []
+      summary: Create new order for participantId
+      description: |
+        It includes the products ordered, the participant data for
+        the product, if required. It also sends the payment, billing
+        and/or shipping information.
+      operationId: postOrder
+      consumes:
+        - application/json
+        - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/participantId'
+        - name: orderData
+          in: body
+          description: Data for Order
+          required: true
+          schema:
+            $ref: '#/definitions/Order'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        default:
+          description: OK
+          schema:
+            $ref: '#/definitions/Default'
+  '/participants/{participantId}/attendances':
+    get:
+      tags:
+        - Participant
+      security:
+        - logonTicket: []
+      summary: Get attendances by participantId
+      operationId: getAttendances
+      consumes: []
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/participantId'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/AttendanceRecord'
+        default:
+          description: OK
+          schema:
+            $ref: '#/definitions/Default'
+  '/participants/{participantId}/ce-requests':
+    get:
+      tags:
+        - Participant
+      security:
+        - logonTicket: []
+      summary: Get continuing education data by participantId
+      operationId: getCERequest
+      consumes: []
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/participantId'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Certificate'
+        default:
+          description: OK
+          schema:
+            $ref: '#/definitions/Default'
+  '/participants/{participantId}/ice':
+    get:
+      tags:
+        - Participant
+      security:
+        - logonTicket: []
+      summary: Get ICE form data by participantId
+      operationId: getICEForm
+      consumes: []
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/participantId'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ICEForm'
+        default:
+          description: OK
+          schema:
+            $ref: '#/definitions/Default'
+  '/participants/{participantId}/designations':
+    get:
+      tags:
+        - Participant
+      security:
+        - logonTicket: []
+      summary: Get participant designations by participantId
+      operationId: getPartDesignations
+      consumes: []
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/participantId'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Designations'
+        default:
+          description: OK
+          schema:
+            $ref: '#/definitions/Default'
+  '/participants/{participantId}/memberships':
+    get:
+      tags:
+        - Participant
+      security:
+        - logonTicket: []
+      summary: Get participant membership information by participantId
+      operationId: getMembershipInfo
+      consumes: []
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/participantId'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Memberships'
+        default:
+          description: OK
+          schema:
+            $ref: '#/definitions/Default'
+  '/participants/{participantId}/registered':
+    get:
+      tags:
+        - Register Others
+      security:
+        - logonTicket: []
+      summary: Get registered participants by participantId
+      operationId: getRegisteredParticipants
+      consumes: []
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/participantId'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties: {}
+        default:
+          description: OK
+          schema:
+            $ref: '#/definitions/Default'
+  '/participants/{participantId}/passes':
+    get:
+      tags:
+        - Participant
+      security:
+        - logonTicket: []
+      summary: Get pass data by participantId
+      operationId: getPasses
+      consumes: []
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/participantId'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Passes'
+        default:
+          description: OK
+          schema:
+            $ref: '#/definitions/Default'
+  '/participants/{participantId}/exams':
+    get:
+      tags:
+        - Participant
+      security:
+        - logonTicket: []
+      summary: Get exam review Data by participantId
+      operationId: getExamReview
+      consumes: []
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/participantId'
+        - name: eventCode
+          in: query
+          description: Event Code for Exam Review
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ExamReview'
+        default:
+          description: OK
+          schema:
+            $ref: '#/definitions/Default'
+  '/participants/{participantId}/suggested-events':
+    get:
+      tags:
+        - Marketing Cloud
+      security:
+        - logonTicket: []
+      summary: Get suggested courses by participantId
+      description: Returns a list of suggested courses for the user
+      deprecated: true
+      operationId: getSuggestCourses
+      consumes: []
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/participantId'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/SuggestedCourses'
+        default:
+          description: OK
+          schema:
+            $ref: '#/definitions/Default'
+  '/participants/{participantId}/suggested-publications':
+    get:
+      tags:
+        - Marketing Cloud
+      security:
+        - logonTicket: []
+      summary: Get suggested publications by participantId
+      description: Returns suggested publications for the User
+      deprecated: true
+      operationId: getSuggestedPublications
+      consumes: []
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/participantId'
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/SuggestedPublications'
+        default:
+          description: OK
+          schema:
+            $ref: '#/definitions/Default'
+  '/participants/{participantId}/registrations/{eventCode}':
+    get:
+      tags:
+        - Participant
+      security:
+        - logonTicket: []
+      summary: Get registrationId by participantID and eventCode
+      operationId: getRegistrationId
+      consumes: []
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/participantId'
+        - name: eventCode
+          in: path
+          description: Event Code for Exam Review
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+  '/participants/{participantId}/registrations':
+    get:
+      tags:
+        - Participant
+      security:
+        - logonTicket: []
+      summary: Get registration status by participantId
+      operationId: getRegistrationStatus
+      consumes:
+        - application/json
+        - application/x-www-form-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/participantId'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/RegStatus'
+        default:
+          description: OK
+          schema:
+            $ref: '#/definitions/Default'
+  '/participants/{participantId}/registrations/webinars':
+    get:
+      tags:
+        - Participant
+      security:
+        - logonTicket: []
+      summary: Get webinar registrations by participantId
+      description: Returns a list of the user's current webinar registrations.
+      operationId: getWebinarRegistrations
+      consumes: []
+      produces:
+        - application/json
+      parameters:
+        - $ref: '#/parameters/participantId'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/WebinarRegistrations'
+        default:
+          description: OK
+          schema:
+            $ref: '#/definitions/Default'
+  /designations:
+    get:
+      tags:
+        - Static
+      summary: Get list of designations
+      description: |
+        This function returns the list of designations
+      operationId: getDesignations
+      consumes: []
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              designations:
+                type: array
+                items:
+                  type: string
+        default:
+          description: OK
+          schema:
+            $ref: '#/definitions/Default'
+  /states:
+    get:
+      tags:
+        - Static
+      summary: Get list of states
+      description: |
+        This function returns the list of states
+        webinars
+      operationId: getStates
+      consumes: []
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+              states:
+                type: array
+                items:
+                  type: string
+        default:
+          description: OK
+          schema:
+            $ref: '#/definitions/Default'
+  /countries:
+    get:
+      tags:
+        - Static
+      summary: Get list of countries and country codes
+      description: |
+        This function returns the list of countries and country codes
+      operationId: getCountries
+      consumes: []
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                countryName:
+                  type: string
+                countryCode:
+                  type: string
+        default:
+          description: OK
+          schema:
+            $ref: '#/definitions/Default'
+  /countries/regions:
+    get:
+      tags:
+        - Static
+      summary: Get list of country regions
+      description: |
+        This function returns the list of countries and regions
+      operationId: getCountryRegions
+      consumes: []
+      produces:
+        - application/json
+      parameters:
+        - name: countryCode
+          in: query
+          description: >-
+            The country code to filter the results with, if excluded return all
+            the regions for all countries.
+          required: false
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                regionId:
+                  type: string
+                stateCode:
+                  type: string
+                stateName:
+                  type: string
+                countryCode:
+                  type: string
+        default:
+          description: OK
+          schema:
+            $ref: '#/definitions/Default'
+definitions:
+  Affdavit:
+    type: object
+    properties:
+      eventRegId:
+        format: int32
+        type: integer
+      eventCode:
+        type: string
+      courseDate:
+        type: string
+      examDate:
+        type: string
+      examStartTime:
+        type: string
+      examEndTime:
+        type: string
+      examAdress:
+        $ref: '#/definitions/Address'
+      courseProvider:
+        type: string
+      courseTitle:
+        type: string
+      state:
+        type: string
+      witness:
+        $ref: '#/definitions/AffidavitWitness'
+      student:
+        $ref: '#/definitions/AffidavitStudent'
+      proctor:
+        $ref: '#/definitions/AffidavitProctor'
+  AffidavitWitness:
+    type: object
+    properties:
+      address:
+        $ref: '#/definitions/Address'
+      phone:
+        type: string
+      license:
+        type: string
+      signature:
+        type: string
+  AffidavitProctor:
+    type: object
+    properties:
+      address:
+        $ref: '#/definitions/Address'
+      agentRelate:
+        type: string
+      company:
+        type: string
+      dayTimePhone:
+        type: string
+      dLnum:
+        type: string
+      dLstate:
+        type: string
+      email:
+        type: string
+      employer:
+        type: string
+      firstName:
+        type: string
+      howText:
+        type: string
+      init1:
+        type: string
+      init2:
+        type: string
+      knowStudent:
+        type: string
+      lastName:
+        type: string
+      licenseNum:
+        type: string
+      monitorAppNum:
+        type: string
+      monitorType:
+        type: string
+      monitorTypeOther:
+        type: string
+      notCompleted:
+        type: string
+      notEmployee:
+        type: string
+      notRelated:
+        type: string
+      notSuper:
+        type: string
+      signature:
+        type: string
+      title:
+        type: string
+  AffidavitStudent:
+    type: object
+    properties:
+      id:
+        type: string
+      participantId:
+        format: int32
+        type: integer
+      address:
+        $ref: '#/definitions/Address'
+      businessPhone:
+        type: string
+      homePhone:
+        type: string
+      firstName:
+        type: string
+      lastName:
+        type: string
+      last4ssn:
+        type: string
+      signature:
+        type: string
+      license:
+        $ref: '#/definitions/License'
+  Events:
+    type: array
+    items:
+      $ref: '#/definitions/Event'
+  Event:
+    type: object
+    description: >-
+      An object containing data for a single event. Events are how The National
+      Alliance refers to its courses.
+    properties:
+      eventId:
+        format: int32
+        type: integer
+      eventCode:
+        type: string
+        description: >
+          The Event Code is a unique identifier in the form
+          {YYYY}{MM}{DD}{State}{ProgramCode} Example: 20141113AZRAR
+      programCode:
+        type: string
+      programGroup:
+        type: string
+      eventTitle:
+        type: string
+      eventType:
+        type: string
+        description: >-
+          The event type is an attribute detailing what type of event. (needs
+          explanation)
+        enum:
+          - LS
+          - LSIH
+          - LSIHOE
+          - LSIHOERS
+          - SS
+          - SSIH
+          - SSIHOE
+          - SSIHOnline
+          - SSOnline
+          - TR
+          - UNIV
+          - 'NULL'
+      formalDate:
+        type: string
+      startDate:
+        format: date-time
+        type: string
+      endDate:
+        format: date-time
+        type: string
+      location:
+        $ref: '#/definitions/EventLocation'
+      price:
+        format: double
+        type: number
+      licenseeUrl:
+        type: string
+      agendaUrl:
+        type: string
+      seatsAreAvailable:
+        format: int32
+        type: integer
+      generalInfoHtml:
+        type: string
+      gateKeeperHtml:
+        type: string
+      eventHours:
+        format: int32
+        type: integer
+      univCourseNumber:
+        type: string
+      univCourseType:
+        type: string
+      univFaculty:
+        type: string
+      longitude:
+        format: double
+        type: number
+      latitude:
+        format: double
+        type: number
+      timeRange:
+        type: string
+      ce:
+        type: array
+        items:
+          $ref: '#/definitions/EventCeApproval'
+  EventLocation:
+    type: object
+    description: An address object for events
+    properties:
+      name:
+        type: string
+      address:
+        $ref: '#/definitions/Address'
+      universityUrl:
+        type: string
+  EventCeApproval:
+    type: object
+    properties:
+      typeId:
+        format: int64
+        type: integer
+      licenseType:
+        type: string
+      price:
+        format: double
+        type: number
+      state:
+        type: string
+      hours:
+        format: int32
+        type: integer
+  WebinarRegistrations:
+    type: object
+    properties:
+      participantId:
+        format: int32
+        type: integer
+      eventCode:
+        type: string
+      eventType:
+        type: string
+      registrationId:
+        format: int32
+        type: integer
+      purchaseDate:
+        format: date-time
+        type: string
+      numberAttempts:
+        format: int32
+        type: integer
+      webinarKey:
+        type: string
+      registrantKey:
+        type: string
+      joinUrl:
+        type: string
+      attended:
+        type: boolean
+  Publication:
+    type: object
+    properties:
+      price:
+        format: double
+        type: number
+      title:
+        type: string
+  License:
+    type: object
+    required:
+      - type
+      - number
+    properties:
+      number:
+        format: int32
+        type: integer
+        maximum: 16
+      state:
+        type: string
+      name:
+        type: string
+      type:
+        type: string
+        enum:
+          - NPN
+          - LIC
+          - ENTITY
+          - SYSID
+          - OIC
+          - ADJUSTER
+  Address:
+    type: object
+    required:
+      - line1
+      - city
+      - country
+      - type
+    properties:
+      line1:
+        type: string
+      line2:
+        type: string
+      city:
+        type: string
+      state:
+        type: string
+      country:
+        type: string
+      countryCode:
+        type: string
+      zip:
+        type: string
+      type:
+        type: string
+        enum:
+          - home
+          - billing
+          - po
+  UserPassword:
+    type: object
+    properties:
+      oldPassword:
+        type: string
+      newPassword:
+        type: string
+  RegStatus:
+    type: object
+    properties:
+      participantId:
+        format: int32
+        type: integer
+      expiration:
+        format: date-time
+        type: string
+      duesSku:
+        type: string
+      duesAmount:
+        format: double
+        type: number
+      registered:
+        format: int32
+        type: integer
+      classFull:
+        format: int32
+        type: integer
+      notDesignated:
+        format: int32
+        type: integer
+      ceRequested:
+        format: int32
+        type: integer
+      manualCE:
+        format: int32
+        type: integer
+      ceRequest:
+        $ref: '#/definitions/CERequestFull'
+      ceInfoCol:
+        type: array
+        items:
+          $ref: '#/definitions/CEInfoType'
+  CEGuides:
+    type: object
+    properties:
+      programCode:
+        type: string
+      state:
+        type: string
+      designation:
+        type: string
+      title:
+        type: string
+      hours:
+        format: double
+        type: number
+      type:
+        type: string
+  Certificate:
+    type: object
+    properties:
+      eventCode:
+        type: string
+      license:
+        $ref: '#/definitions/License'
+      regCeDeclined:
+        format: int32
+        type: integer
+  ExamReview:
+    type: object
+    properties:
+      instituteLocation:
+        type: string
+      address:
+        $ref: '#/definitions/Address'
+      company:
+        type: string
+      title:
+        type: string
+      businessPhone:
+        type: string
+      homePhone:
+        type: string
+      licenseType:
+        type: string
+      email:
+        type: string
+      firstName:
+        type: string
+      lastName:
+        type: string
+      educationConsultant:
+        type: object
+        properties:
+          name:
+            type: string
+          email:
+            type: string
+          participantId:
+            format: int32
+            type: integer
+      designation:
+        type: string
+      examNumber:
+        type: string
+      score:
+        format: int32
+        type: integer
+      eventCutoff:
+        format: int32
+        type: integer
+      passRatio:
+        type: string
+      examReceived:
+        type: string
+      courseHistory:
+        type: array
+        items:
+          $ref: '#/definitions/CourseHistory'
+  ScheduleRequest:
+    type: object
+    properties:
+      zip:
+        type: string
+      miles:
+        format: int32
+        type: integer
+      programCodes:
+        $ref: '#/definitions/ProgramCodes'
+  CERequest:
+    type: object
+    properties:
+      firstName:
+        type: string
+      lastName:
+        type: string
+      license:
+        $ref: '#/definitions/License'
+  ProgramCodes:
+    type: array
+    items:
+      type: string
+  CERequestFull:
+    type: object
+    properties:
+      registrationId:
+        type: string
+      feeAssessed:
+        format: int32
+        type: integer
+      typeId:
+        format: int32
+        type: integer
+      declinedChoice:
+        format: int32
+        type: integer
+      license:
+        $ref: '#/definitions/License'
+      requestTypes:
+        type: array
+        items:
+          $ref: '#/definitions/CEShortType'
+  CEShortType:
+    type: object
+    properties:
+      typeId:
+        format: int64
+        type: integer
+      licenseType:
+        type: string
+  CEInfoType:
+    type: object
+    properties:
+      state:
+        type: string
+      licenseLabel:
+        type: string
+      typeCol:
+        type: array
+        items:
+          $ref: '#/definitions/CETypeType'
+  CETypeType:
+    type: object
+    properties:
+      licenseType:
+        type: string
+      typeId:
+        format: int64
+        type: integer
+      hours:
+        format: int64
+        type: integer
+      units:
+        format: int64
+        type: integer
+      price:
+        format: float
+        type: number
+      exclusive:
+        format: int32
+        type: integer
+  Default:
+    description: Default
+    type: object
+    required:
+      - message
+      - code
+    properties:
+      message:
+        type: string
+      code:
+        type: integer
+        minimum: 100
+        maximum: 600
+  OLScores:
+    type: object
+    properties:
+      scores:
+        type: array
+        items:
+          title: OLScore
+          type: object
+          properties:
+            regId:
+              format: int32
+              type: integer
+            grade:
+              format: int32
+              type: integer
+            startTime:
+              description: UTC TIME
+              format: date-time
+              type: string
+            endTime:
+              description: UTC TIME
+              format: date-time
+              type: string
+  WBScores:
+    type: object
+    properties:
+      scores:
+        type: array
+        items:
+          $ref: '#/definitions/WBScore'
+  WBScore:
+    type: object
+    properties:
+      regId:
+        format: int32
+        type: integer
+      title:
+        type: string
+      answeredPoints:
+        format: int32
+        type: integer
+      totalPoints:
+        format: int32
+        type: integer
+  WebinarSessions:
+    type: object
+    properties:
+      sessions:
+        type: array
+        items:
+          $ref: '#/definitions/WebinarSession'
+  WebinarSession:
+    type: object
+    properties:
+      eventCode:
+        type: string
+      webinarKey:
+        type: string
+      sessionDay:
+        format: int32
+        type: integer
+      sessionStartTime:
+        format: date-time
+        type: string
+      sessionEndTime:
+        format: date-time
+        type: string
+      title:
+        type: string
+      instructor:
+        type: string
+      uniqueId:
+        description: 'This is a string of the form `concat(eventCode, sessionStartTime)`'
+        type: string
+  Order:
+    type: object
+    properties:
+      cartSession:
+        type: string
+      clientIP:
+        type: string
+      clientBrowser:
+        type: string
+      cartTime:
+        format: date-time
+        type: string
+      version:
+        format: int32
+        default: 2
+        type: integer
+      oracleSession:
+        type: string
+      action:
+        type: string
+      shippingAmount:
+        format: double
+        type: number
+      shippingMethod:
+        type: string
+      baseTaxAmount:
+        format: double
+        type: number
+      referral:
+        type: string
+      payment:
+        $ref: '#/definitions/Payment'
+      items:
+        type: array
+        items:
+          $ref: '#/definitions/Item'
+      couponCode:
+        type: string
+      orderId:
+        format: int32
+        type: integer
+      billingAddress:
+        type: object
+        items:
+          $ref: '#/definitions/Address'
+      shippingAddress:
+        type: object
+        items:
+          $ref: '#/definitions/Address'
+  OrderPayment:
+    type: object
+    properties:
+      orderNumber:
+        description: The order identifier
+        format: int32
+        type: integer
+      paid:
+        description: A boolean regarding whether the order has been paid in full
+        type: boolean
+  Payment:
+    type: object
+    properties:
+      authId:
+        type: string
+      ccLast4:
+        format: int32
+        type: integer
+      ccType:
+        type: string
+      transId:
+        type: string
+      method:
+        type: string
+      grandTotal:
+        format: double
+        type: number
+  Item:
+    type: object
+    properties:
+      price:
+        format: double
+        type: number
+      discountAmount:
+        format: double
+        type: number
+      quantityOrdered:
+        format: double
+        type: integer
+      sku:
+        type: string
+      declined:
+        format: int32
+        type: integer
+      firstName:
+        type: string
+      lastName:
+        type: string
+      eventCode:
+        type: string
+      license:
+        type: string
+      state:
+        type: string
+      typeId:
+        format: int32
+        type: integer
+  Participant:
+    type: object
+    title: test
+    description: This object contains information for a single participant.
+    properties:
+      participantData:
+        $ref: '#/definitions/ParticipantForm'
+      designationsData:
+        type: array
+        description: >-
+          An array of TNA designation objects for the designations the
+          participant has completed with memberhship info.
+        items:
+          $ref: '#/definitions/DesignationsData'
+      passes:
+        type: array
+        items:
+          $ref: '#/definitions/Passes'
+      ceRequest:
+        type: array
+        items:
+          $ref: '#/definitions/Certificate'
+      ice:
+        $ref: '#/definitions/ICEForm'
+  Keywords:
+    type: array
+    description: An array of keywords for the participant archive
+    items:
+      type: string
+  Passes:
+    type: object
+    properties:
+      passed:
+        format: int32
+        type: integer
+      program:
+        type: string
+      designation:
+        type: string
+  DesignationsData:
+    type: object
+    properties:
+      designation:
+        type: string
+      updateDate:
+        type: string
+      dateDesignated:
+        type: string
+      status:
+        type: string
+      statusDate:
+        type: string
+      passesDue:
+        type: string
+      membershipExpiration:
+        type: string
+      credit:
+        format: int32
+        type: integer
+      canPay:
+        format: int32
+        type: integer
+      amount:
+        format: int32
+        type: integer
+      pending:
+        format: int32
+        type: integer
+  Designations:
+    type: object
+    description: A designation object containing update information for the participant.
+    properties:
+      designation:
+        type: string
+      updateDate:
+        type: string
+      dateDesignated:
+        type: string
+      status:
+        type: string
+      statusDate:
+        type: string
+      passesDue:
+        type: string
+  Memberships:
+    type: object
+    description: >-
+      A membership object containing membership fee information for the
+      participant.
+    properties:
+      designation:
+        type: string
+      membershipExpiration:
+        type: string
+      credit:
+        format: int32
+        type: integer
+      canPay:
+        format: int32
+        type: integer
+      amount:
+        format: int32
+        type: integer
+      pending:
+        format: int32
+        type: integer
+  AttendanceRecord:
+    type: object
+    description: An array
+    properties:
+      attendances:
+        type: array
+        items:
+          $ref: '#/definitions/Attendance'
+      updateDate1:
+        type: string
+      updateDate2:
+        type: string
+  Attendance:
+    type: object
+    description: >-
+      An object containing attendance data for a participant in a specific
+      event.
+    properties:
+      eventCode:
+        type: string
+      program:
+        description: The title of the program attended
+        type: string
+      courseEndDate:
+        format: date-time
+        type: string
+      city:
+        type: string
+      status:
+        description: The status of the participant in the event
+        type: string
+      year1:
+        format: int32
+        type: integer
+      year2:
+        format: int32
+        type: integer
+      CICYear:
+        format: int32
+        type: integer
+      CISRYear:
+        format: int32
+        type: integer
+      CRMYear:
+        format: int32
+        type: integer
+      CSRMYear:
+        format: int32
+        type: integer
+  CourseHistory:
+    type: object
+    properties:
+      eventCode:
+        type: string
+      eventDate:
+        type: string
+      eventState:
+        type: string
+      status:
+        type: string
+      designationType:
+        type: string
+      description:
+        type: string
+  ParticipantForm:
+    type: object
+    description: >-
+      The data form used to create a new participant or update the core
+      participant data
+    properties:
+      resourcesMagazine:
+        type: object
+        properties:
+          printedVersion:
+            description: >-
+              If true the participant wishes to recieve a printed version of
+              resources magazine.
+            type: boolean
+          authorized:
+            description: If true the participant is authorized to view resources magazine.
+            type: boolean
+      participantId:
+        format: int32
+        type: integer
+      username:
+        type: string
+      email:
+        type: string
+      gender:
+        type: string
+        enum:
+          - Female
+          - Male
+          - Not Specified
+      prefix:
+        type: string
+        default: 'null'
+        enum:
+          - 'null'
+          - Ms
+          - Mr
+          - Mrs
+          - Lic
+          - Dr
+          - Ing
+          - Sr
+          - C.P
+          - Act
+          - Sra
+          - Srta
+      firstName:
+        type: string
+        pattern: '^[a-zA-Z''''-''\s]{1,40}$'
+      middleName:
+        type: string
+        pattern: '^[a-zA-Z''''-''\s]{1,40}$'
+      lastName:
+        type: string
+        pattern: '^[a-zA-Z''''-''\s]{1,40}$'
+      suffix:
+        type: string
+        enum:
+          - 'null'
+          - Jr.
+          - III
+          - Sr.
+          - II
+          - IV
+          - Esq.
+          - V
+          - VI
+      namePreference:
+        type: string
+      birthday:
+        format: date
+        type: string
+      licenses:
+        type: array
+        items:
+          $ref: '#/definitions/License'
+      nationalProducerNumber:
+        format: int32
+        type: integer
+      otherDesignations:
+        type: array
+        items:
+          type: string
+      shippingAddress:
+        $ref: '#/definitions/Address'
+      billingAddress:
+        $ref: '#/definitions/Address'
+      businessPhone:
+        type: string
+      homePhone:
+        type: string
+      professionalFocus:
+        type: string
+        enum:
+          - Claims
+          - Customer Service
+          - Finance Accounting
+          - Human Resources
+          - Legal
+          - Marketing
+          - Operations
+          - Other
+          - Risk Management
+          - Safety and Loss Control
+          - Sales
+          - Training and Education
+          - Underwriting
+      employerDescription:
+        type: string
+        enum:
+          - School or School District
+          - Association
+          - Financial Institution
+          - Government Agency
+          - Insurance Agent
+          - Insurance Carrier
+          - Non-Insurance Organization
+          - Other
+          - Presently Unemployed
+          - University or College
+      employerName:
+        type: string
+      numberSupervised:
+        type: string
+        enum:
+          - Zero
+          - 1 to 10
+          - 11 to 25
+          - More than 26
+  ICEForm:
+    type: object
+    title: In Case of Emergency Form
+    description: The form containing the emergency information for a participant
+    properties:
+      participantName:
+        format: int32
+        type: integer
+      eventAttending:
+        type: string
+      eventAddressType:
+        type: string
+        enum:
+          - Conference Hotel
+          - Other Hotel or Residence
+      address:
+        $ref: '#/definitions/Address'
+      phoneNumber:
+        type: string
+      emergencyContact:
+        type: object
+        description: The emergency contact for the participant.
+        properties:
+          fullName:
+            type: string
+          relationship:
+            description: >-
+              The relationship the participant has to the emergency contact,
+              such as father, son, friend, et cetera.
+            type: string
+          address:
+            $ref: '#/definitions/Address'
+          phoneNumber:
+            type: string
+          medicationAllergies:
+            type: array
+            description: An array of medications the participant is allergic too.
+            items:
+              type: string
+  SuggestedCourses:
+    type: object
+    properties:
+      participantId:
+        format: int32
+        type: integer
+      program:
+        type: string
+      formalDate:
+        type: string
+      city:
+        type: string
+      state:
+        type: string
+      agendaPath:
+        type: string
+      travelDest:
+        type: string
+      regPath:
+        type: string
+      link:
+        type: string
+      price:
+        format: double
+        type: number
+      eventCode:
+        type: string
+      designations:
+        type: string
+      courseLinks:
+        type: string
+      startDate:
+        format: date-time
+        type: string
+      programDesc:
+        type: string
+  SuggestedPublications:
+    type: object
+    properties:
+      inventoryId:
+        type: string
+      series:
+        type: string
+      title:
+        type: string
+      description:
+        type: string
+      price:
+        type: string
+      pages:
+        type: string
+      image:
+        type: string
+      finRsn:
+        format: int32
+        type: integer
+      designation:
+        type: string

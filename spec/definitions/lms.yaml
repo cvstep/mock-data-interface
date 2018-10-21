@@ -1,0 +1,74 @@
+OLScores:
+  type: object
+  properties:
+    scores:
+      type: array
+      items:
+        title: OLScore
+        type: object
+        properties:
+          regId:
+            format: int32
+            type: integer
+          grade:
+            format: int32
+            type: integer
+          startTime:
+            description: UTC TIME
+            format: date-time
+            type: string
+          endTime:
+            description: UTC TIME
+            format: date-time
+            type: string
+WBScores:
+  type: object
+  properties:
+    scores:
+      type: array
+      items:
+        $ref: '#/definitions/WBScore'
+WBScore:
+  type: object
+  properties:
+    regId:
+      format: int32
+      type: integer
+    title:
+      type: string
+    answeredPoints:
+      format: int32
+      type: integer
+    totalPoints:
+      format: int32
+      type: integer
+WebinarSessions:
+  type: object
+  properties:
+    sessions:
+      type: array
+      items:
+        $ref: '#/definitions/WebinarSession'
+WebinarSession:
+  type: object
+  properties:
+    eventCode:
+      type: string
+    webinarKey:
+      type: string
+    sessionDay:
+      format: int32
+      type: integer
+    sessionStartTime:
+      format: date-time
+      type: string
+    sessionEndTime:
+      format: date-time
+      type: string
+    title:
+      type: string
+    instructor:
+      type: string
+    uniqueId:
+      description: This is a string of the form `concat(eventCode, sessionStartTime)`
+      type: string

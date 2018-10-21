@@ -1,0 +1,36 @@
+participantId:
+  name: participantId
+  in: path
+  description: A unique participant identifier is created for each participant.
+  required: true
+  type: integer
+  format: int32
+username:
+  name: username
+  in: path
+  description: |
+    When a participant is created they either pick a username or if it is a system generated account the username is created automatically
+    from their first and last names.
+  required: true
+  type: string
+userinfo:
+  name: userinfo
+  in: path
+  description: |
+    The userinfo object is either the email address of the participant or the username address of the participant.
+  required: true
+  type: string
+eventCode:
+  name: eventCode
+  in: path
+  description: |
+    The Event Code is a unique identifier for events (courses) in the form {YYYY}{MM}{DD}{State}{ProgramCode} Example: 20141113AZRAR
+  required: true
+  type: string
+registrationId:
+  name: registrationId
+  in: path
+  description: The registration identifier for the participant and event
+  required: true
+  format: int32
+  type: integer

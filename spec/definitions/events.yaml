@@ -1,0 +1,204 @@
+Events:
+  type: array
+  items:
+    $ref: '#/definitions/Event'
+Event:
+  type: object
+  description: An object containing data for a single event. Events are how The National Alliance refers to its courses.
+  properties:
+    eventId:
+      format: int32
+      type: integer
+    eventCode:
+      type: string
+      description: |
+        The Event Code is a unique identifier in the form {YYYY}{MM}{DD}{State}{ProgramCode} Example: 20141113AZRAR
+    programCode:
+      type: string
+    programGroup:
+      type: string
+    eventTitle:
+      type: string
+    eventType:
+      type: string
+      description: The event type is an attribute detailing what type of event. (needs explanation)
+      enum:
+      - LS
+      - LSIH
+      - LSIHOE
+      - LSIHOERS
+      - SS
+      - SSIH
+      - SSIHOE
+      - SSIHOnline
+      - SSOnline
+      - TR
+      - UNIV
+      - 'NULL'
+    formalDate:
+      type: string
+    startDate:
+      format: date-time
+      type: string
+    endDate:
+      format: date-time
+      type: string
+    location:
+      $ref: '#/definitions/EventLocation'
+    price:
+      format: double
+      type: number
+    licenseeUrl:
+      type: string
+    agendaUrl:
+      type: string
+    seatsAreAvailable:
+      format: int32
+      type: integer
+    generalInfoHtml:
+      type: string
+    gateKeeperHtml:
+      type: string
+    eventHours:
+      format: int32
+      type: integer
+    univCourseNumber:
+      type: string
+    univCourseType:
+      type: string
+    univFaculty:
+      type: string
+    longitude:
+      format: double
+      type: number
+    latitude:
+      format: double
+      type: number
+    timeRange:
+      type: string
+    ce:
+      type: array
+      items:
+        $ref: '#/definitions/EventCeApproval'
+EventLocation:
+  type: object
+  description: An address object for events
+  properties:
+    name:
+      type: string
+    address:
+      $ref: '#/definitions/Address'
+    universityUrl:
+      type: string
+
+EventCeApproval:
+  type: object
+  properties:
+    typeId:
+      format: int64
+      type: integer
+    licenseType:
+      type: string
+    price:
+      format: double
+      type: number
+    state:
+      type: string
+    hours:
+      format: int32
+      type: integer
+
+WebinarRegistrations:
+  type: object
+  properties:
+    participantId:
+      format: int32
+      type: integer
+    eventCode:
+      type: string
+    eventType:
+      type: string
+    registrationId:
+      format: int32
+      type: integer
+    purchaseDate:
+      format: date-time
+      type: string
+    numberAttempts:
+      format: int32
+      type: integer
+    webinarKey:
+      type: string
+    registrantKey:
+      type: string
+    joinUrl:
+      type: string
+    attended:
+      type: boolean
+
+Publication:
+  type: object
+  properties:
+    price:
+      format: double
+      type: number
+    title:
+      type: string
+# EventSyncResponseLMS {
+#   ProgramCode (string, optional),
+#   ProgramGroup (string, optional),
+#   EventRID (integer, optional),
+#   EventCode (string, optional),
+#   EventTitle (string, optional),
+#   EventType (string, optional),
+#   FormalDate (string, optional),
+#   StartDate (string, optional),
+#   TimeRange (string, optional)
+# }
+
+
+# ScheduleRequest {
+# Months (Array[Mons], optional),
+# States (Array[Sts], optional),
+# Zip (string, optional),
+# Miles (integer, optional),
+# ProgramCodes (Array[PCodes], optional),
+# EventCode (string, optional),
+# PaginationStart (integer, optional),
+# PaginationLimit (integer, optional)
+# }Mons {
+# Month (string, optional)
+# }Sts {
+# State (string, optional)
+# }PCodes {
+# ProgramCode (string, optional)
+# }
+# EventSyncResponse {
+#   ProgramGroup (string, optional),
+#   EventRID (integer, optional),
+#   ProgramCode (string, optional),
+#   EventCode (string, optional),
+#   FormalDate (string, optional),
+#   StartDate (string, optional),
+#   Price (number, optional),
+#   LocName (string, optional),
+#   LocAddress (string, optional),
+#   LocCity (string, optional),
+#   LocState (string, optional),
+#   LocZipCode (string, optional),
+#   LocationUnivURL (string, optional),
+#   LicenseeURL (string, optional),
+#   AgendaURL (string, optional),
+#   SeatsAreAvailable (integer, optional),
+#   GeneralInfoHTML (string, optional),
+#   GateKeeperHTML (string, optional),
+#   EventType (string, optional),
+#   EventHours (integer, optional),
+#   UnivCourseNumber (string, optional),
+#   UnivCourseType (string, optional),
+#   UnivFaculty (string, optional),
+#   Longitude (number, optional),
+#   Latitude (number, optional),
+#   TimeRange (string, optional)
+# }
+

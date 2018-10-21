@@ -1,0 +1,597 @@
+/participants:
+  post:
+    tags:
+    - Participant
+    summary: Create new participant
+    description: |
+      Creates new participant. Perform necessary business operations like sending welcome email.
+    operationId: createParticipant
+    consumes:
+    - application/json
+    - application/x-www-form-urlencoded
+    produces:
+    - application/json
+    parameters:
+    - name: participantForm
+      in: body
+      description: URL-encoded form of Participant data.
+      required: true
+      schema:
+        $ref: '#/definitions/ParticipantForm'
+    responses:
+      200:
+        description: |
+          **Return Value:**
+        schema:
+          type: object
+      default:
+        description: OK
+        schema:
+          $ref: '#/definitions/Default'
+
+/participants/{participantId}:
+  get:
+    tags:
+    - Participant
+    security:
+    - logonTicket: []
+    summary: Get Participant data by participantId
+    operationId: getUserData
+    consumes: []
+    produces:
+    - application/json
+    parameters:
+    - $ref: '#/parameters/participantId'
+    responses:
+      200:
+        description: OK
+        schema:
+          $ref: '#/definitions/Participant'
+      default:
+        description: OK
+        schema:
+          $ref: '#/definitions/Default'
+  put:
+    tags:
+    - Participant
+    security:
+    - logonTicket: []
+    summary: Update user data by participantId
+    operationId: updateParticipantData
+    consumes:
+    - application/json
+    - application/x-www-form-urlencoded
+    produces:
+    - application/json
+    parameters:
+    - $ref: '#/parameters/participantId'
+    - name: userForm
+      in: body
+      description: URL-encoded form of Participant data.
+      required: true
+      schema:
+        $ref: '#/definitions/ParticipantForm' #update
+    responses:
+      200:
+        description: OK
+        schema:
+          type: object
+############################ Authentication Endpoints
+/participants/auth:
+  post:
+    description: Log the user on and returns the LogonToken.
+    tags:
+    - Authentication
+    summary: Login user by userinfo and password
+    operationId: authorize
+    consumes:
+    - application/json
+    - application/x-www-form-urlencoded
+    produces:
+    - application/json
+    parameters:
+    - name: logonForm
+      in: body
+      description: userinfo and password in plain text.
+      required: true
+      schema:
+        type: object
+        properties:
+          userInfo:
+            description: Either the participants username or the participants email address
+            type: string
+          password:
+            type: string
+    responses:
+      200:
+        description: OK
+        schema:
+          type: object
+          properties:
+            logonToken:
+              type: string
+  get:
+    description: This function is designed to be used to logon users from links in emails or other marketing materials. It is rather unsafe, but is included for historical reasons.
+    tags:
+    - Authentication
+    security:
+    - logonTicket: []
+    summary: Get participantId by logonToken
+    operationId: getPIdByLogonToken
+    consumes:
+    - application/json
+    produces:
+    - application/json
+    responses:
+      200:
+        description: OK
+        schema:
+          type: object
+          properties:
+            logonToken:
+              type: string
+            participantId:
+              type: integer
+              format: int32
+/participants/auth/reset-password:
+  post:
+    tags:
+    - Authentication
+    summary: Start password reset process by participant email.
+    operationId: resetPassword
+    consumes:
+    - application/json
+    - application/x-www-form-urlencoded
+    produces:
+    - application/json
+    parameters:
+    - name: resetForm
+      in: body
+      description: User password reset form.
+      required: true
+      schema:
+        type: object
+        properties:
+          userEmail:
+            type: string
+    responses:
+      200:
+        description: OK
+        schema:
+          type: object
+/participants/auth/{participantId}/LMSKey:
+  get:
+    tags:
+    - Authentication
+    summary: Get encrypted LMS logon key by participantId
+    description: |
+      This endpoint returns the encrypted logon key for the LMS given the participantId. Example psuedo code for creating the link:
+      ```
+      GetTopClassLoginURL(int PID)
+        string login_url = "";
+          using (WebClient client = new WebClient())
+            string url = "$API_HOST$/participants/' + PID.ToString() + '/auth/LMSKey");
+            login_url = @"http://54.89.109.25/topclass/login.do?uid=" + client.DownloadString(url);
+            login_url = login_url.Replace("\"", string.Empty);
+        return login_url;
+      ```
+    operationId: getLMSKey
+    consumes: []
+    produces:
+    - application/json
+    parameters:
+    - $ref: '#/parameters/participantId'
+    responses:
+      200:
+        description: OK
+        schema:
+          type: object
+          title: lmsKey
+          properties:
+            lmsKey:
+              type: string
+              description: The encrypted key used to create the automatic logon link for the learning management system
+      default:
+        description: OK
+        schema:
+          $ref: '#/definitions/Default'
+
+
+####################################################
+/participants/{participantId}/password:
+  put:
+    tags:
+    - Authentication
+    security:
+    - logonTicket: []
+    summary: Update user password by participantId
+    operationId: putPassword
+    consumes:
+    - application/json
+    - application/x-www-form-urlencoded
+    produces:
+    - application/json
+    parameters:
+    - $ref: '#/parameters/participantId'
+    - name: userPasswordForm
+      in: body
+      description: Password Form.
+      required: true
+      schema:
+        $ref: '#/definitions/UserPassword' #update
+    responses:
+      200:
+        description: OK
+        schema:
+          type: object
+
+
+
+
+/participants/{participantId}/orders:
+  post:
+    tags:
+    - Magento
+    security:
+    - logonTicket: []
+    summary: Create new order for participantId
+    description: |
+      It includes the products ordered, the participant data for
+      the product, if required. It also sends the payment, billing
+      and/or shipping information.
+    operationId: postOrder
+    consumes:
+    - application/json
+    - application/x-www-form-urlencoded
+    produces:
+    - application/json
+    parameters:
+    - $ref: '#/parameters/participantId'
+    - name: orderData
+      in: body
+      description: Data for Order
+      required: true
+      schema:
+        $ref: '#/definitions/Order'
+    responses:
+      200:
+        description: OK
+        schema:
+          type: object
+      default:
+        description: OK
+        schema:
+          $ref: '#/definitions/Default'
+
+/participants/{participantId}/attendances:
+  get:
+    tags:
+      - Participant
+    security:
+    - logonTicket: []
+    summary: Get attendances by participantId
+    operationId: getAttendances
+    consumes: []
+    produces:
+      - application/json
+    parameters:
+    - $ref: '#/parameters/participantId'
+    responses:
+      200:
+        description: OK
+        schema:
+          $ref: '#/definitions/AttendanceRecord'
+      default:
+        description: OK
+        schema:
+          $ref: '#/definitions/Default'
+# /participants/{participantId}/courses:
+#   get:
+#   put:
+#   delete:
+/participants/{participantId}/ce-requests:
+  get:
+    tags:
+      - Participant
+    security:
+    - logonTicket: []
+    summary: Get continuing education data by participantId
+    operationId: getCERequest
+    consumes: []
+    produces:
+    - application/json
+    parameters:
+    - $ref: '#/parameters/participantId'
+    responses:
+      200:
+        description: OK
+        schema:
+          type: array
+          items:
+            $ref: '#/definitions/Certificate'
+      default:
+        description: OK
+        schema:
+          $ref: '#/definitions/Default'
+/participants/{participantId}/ice:
+  get:
+    tags:
+      - Participant
+    security:
+    - logonTicket: []
+    summary: Get ICE form data by participantId
+    operationId: getICEForm
+    consumes: []
+    produces:
+    - application/json
+    parameters:
+    - $ref: '#/parameters/participantId'
+    responses:
+      200:
+        description: OK
+        schema:
+          $ref: '#/definitions/ICEForm'
+      default:
+        description: OK
+        schema:
+          $ref: '#/definitions/Default'
+
+/participants/{participantId}/designations:
+  get:
+    tags:
+      - Participant
+    security:
+    - logonTicket: []
+    summary: Get participant designations by participantId
+    operationId: getPartDesignations
+    consumes: []
+    produces:
+    - application/json
+    parameters:
+    - $ref: '#/parameters/participantId'
+    responses:
+      200:
+        description: OK
+        schema:
+          type: array
+          items:
+            $ref: '#/definitions/Designations'
+      default:
+        description: OK
+        schema:
+          $ref: '#/definitions/Default'
+/participants/{participantId}/memberships:
+  get:
+    tags:
+      - Participant
+    security:
+    - logonTicket: []
+    summary: Get participant membership information by participantId
+    operationId: getMembershipInfo
+    consumes: []
+    produces:
+    - application/json
+    parameters:
+    - $ref: '#/parameters/participantId'
+    responses:
+      200:
+        description: OK
+        schema:
+          type: array
+          items:
+            $ref: '#/definitions/Memberships'
+      default:
+        description: OK
+        schema:
+          $ref: '#/definitions/Default'
+
+
+
+/participants/{participantId}/registered:
+  get:
+    tags:
+    - Register Others
+    security:
+    - logonTicket: []
+    summary: Get registered participants by participantId
+    operationId: getRegisteredParticipants
+    consumes: []
+    produces:
+    - application/json
+    parameters:
+    - $ref: '#/parameters/participantId'
+    responses:
+      200:
+        description: OK
+        schema:
+          type: object
+          properties: {}
+      default:
+        description: OK
+        schema:
+          $ref: '#/definitions/Default'
+
+
+/participants/{participantId}/passes:
+  get:
+    tags:
+      - Participant
+    security:
+    - logonTicket: []
+    summary: Get pass data by participantId
+    operationId: getPasses
+    consumes: []
+    produces:
+    - application/json
+    parameters:
+    - $ref: '#/parameters/participantId'
+    responses:
+      200:
+        description: OK
+        schema:
+          type: array
+          items:
+            $ref: '#/definitions/Passes'
+      default:
+        description: OK
+        schema:
+          $ref: '#/definitions/Default'
+
+#/participants/{participantId}/{eventCode}/passes:
+
+/participants/{participantId}/exams:
+  get:
+    tags:
+      - Participant
+    security:
+    - logonTicket: []
+    summary: Get exam review Data by participantId
+    operationId: getExamReview
+    consumes: []
+    produces:
+    - application/json
+    parameters:
+    - $ref: '#/parameters/participantId'
+    - name: eventCode
+      in: query
+      description: Event Code for Exam Review
+      required: true
+      type: string
+    responses:
+      200:
+        description: OK
+        schema:
+          $ref: '#/definitions/ExamReview'
+      default:
+        description: OK
+        schema:
+          $ref: '#/definitions/Default'
+
+
+/participants/{participantId}/suggested-events:
+  get:
+    tags:
+      - Marketing Cloud
+    security:
+    - logonTicket: []
+    summary: Get suggested courses by participantId
+    description: Returns a list of suggested courses for the user
+    deprecated: true
+    operationId: getSuggestCourses
+    consumes: []
+    produces:
+    - application/json
+    parameters:
+    - $ref: '#/parameters/participantId'
+    responses:
+      200:
+        description: OK
+        schema:
+          type: array
+          items:
+            $ref: '#/definitions/SuggestedCourses'
+      default:
+        description: OK
+        schema:
+          $ref: '#/definitions/Default'
+
+/participants/{participantId}/suggested-publications:
+  get:
+    tags:
+      - Marketing Cloud
+    security:
+    - logonTicket: []
+    summary: Get suggested publications by participantId
+    description: Returns suggested publications for the User
+    deprecated: true
+    operationId: getSuggestedPublications
+    consumes: []
+    produces:
+    - application/json
+    parameters:
+    - $ref: '#/parameters/participantId'
+    responses:
+      200:
+        description: OK
+        schema:
+          type: array
+          items:
+            $ref: '#/definitions/SuggestedPublications'
+      default:
+        description: OK
+        schema:
+          $ref: '#/definitions/Default'
+
+/participants/{participantId}/registrations/{eventCode}:
+  get:
+    tags:
+      - Participant
+    security:
+    - logonTicket: []
+    summary: Get registrationId by participantID and eventCode
+    operationId: getRegistrationId
+    consumes: []
+    produces:
+    - application/json
+    parameters:
+    - $ref: '#/parameters/participantId'
+    - name: eventCode
+      in: path
+      description: Event Code for Exam Review
+      required: true
+      type: string
+    responses:
+      200:
+        description: OK
+        schema:
+          type: object
+
+/participants/{participantId}/registrations:
+  get:
+    tags:
+    - Participant
+    security:
+    - logonTicket: []
+    summary: Get registration status by participantId
+    operationId: getRegistrationStatus
+    consumes:
+    - application/json
+    - application/x-www-form-urlencoded
+    produces:
+    - application/json
+    parameters:
+    - $ref: '#/parameters/participantId'
+    responses:
+      200:
+        description: OK
+        schema:
+          $ref: '#/definitions/RegStatus'
+      default:
+        description: OK
+        schema:
+          $ref: '#/definitions/Default'
+
+
+/participants/{participantId}/registrations/webinars:
+  get:
+    tags:
+      - Participant
+    security:
+    - logonTicket: []
+    summary: Get webinar registrations by participantId
+    description: Returns a list of the user's current webinar registrations.
+    operationId: getWebinarRegistrations
+    consumes: []
+    produces:
+      - application/json
+    parameters:
+    - $ref: '#/parameters/participantId'
+    responses:
+      200:
+        description: OK
+        schema:
+          $ref: '#/definitions/WebinarRegistrations'
+      default:
+        description: OK
+        schema:
+          $ref: '#/definitions/Default'

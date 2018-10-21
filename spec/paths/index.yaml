@@ -1,0 +1,34 @@
+/ce/guide:
+  get:
+    tags:
+      - Continuing Education
+    summary: Get approvals by state, program, or designation
+    operationId: getCEGuides
+    consumes: []
+    produces:
+      - application/json
+    parameters:
+    - name: state
+      in: query
+      description: State to return the approvals for.
+      required: false
+      type: string
+    - name: program
+      in: query
+      description: Program.
+      required: false
+      type: string
+    - name: designation
+      in: query
+      description: Designation.
+      required: false
+      type: string
+    responses:
+      '200':
+        description: OK
+        schema:
+          $ref: '#/definitions/CEGuides'
+      default:
+        description: OK
+        schema:
+          $ref: '#/definitions/Default'

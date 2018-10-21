@@ -1,0 +1,391 @@
+Participant:
+  type: object
+  title: test
+  description: This object contains information for a single participant.
+  properties:
+    participantData:
+      $ref: '#/definitions/ParticipantForm'
+    designationsData:
+      type: array
+      description: An array of TNA designation objects for the designations the participant has completed with memberhship info.
+      items:
+        $ref: '#/definitions/DesignationsData'
+    passes:
+      type: array
+      items:
+        $ref: '#/definitions/Passes'
+    ceRequest:
+      type: array
+      items:
+        $ref: '#/definitions/Certificate'
+    ice:
+      $ref: '#/definitions/ICEForm'
+Keywords:
+  type: array
+  description: An array of keywords for the participant archive
+  items:
+    type: string
+
+Passes:
+  type: object
+  properties:
+    passed:
+      format: int32
+      type: integer
+    program:
+      type: string
+    designation:
+      type: string
+DesignationsData:
+  type: object
+  properties:
+    designation:
+      type: string
+    updateDate:
+      type: string
+    dateDesignated:
+      type: string
+    status:
+      type: string
+    statusDate:
+      type: string
+    passesDue:
+      type: string
+    membershipExpiration:
+      type: string
+    credit:
+      format: int32
+      type: integer
+    canPay:
+      format: int32
+      type: integer
+    amount:
+      format: int32
+      type: integer
+    pending:
+      format: int32
+      type: integer
+Designations:
+  type: object
+  description: A designation object containing update information for the participant.
+  properties:
+    designation:
+      type: string
+    updateDate:
+      type: string
+    dateDesignated:
+      type: string
+    status:
+      type: string
+    statusDate:
+      type: string
+    passesDue:
+      type: string
+Memberships:
+  type: object
+  description: A membership object containing membership fee information for the participant.
+  properties:
+    designation:
+      type: string
+    membershipExpiration:
+      type: string
+    credit:
+      format: int32
+      type: integer
+    canPay:
+      format: int32
+      type: integer
+    amount:
+      format: int32
+      type: integer
+    pending:
+      format: int32
+      type: integer
+
+AttendanceRecord:
+  type: object
+  description: An array
+  properties:
+    attendances:
+      type: array
+      items:
+        $ref: '#/definitions/Attendance'
+    updateDate1:
+      type: string
+    updateDate2:
+      type: string
+Attendance:
+  type: object
+  description: An object containing attendance data for a participant in a specific event.
+  properties:
+    eventCode:
+      type: string
+    program:
+      description: The title of the program attended
+      type: string
+    courseEndDate:
+      format: date-time
+      type: string
+    city:
+      type: string
+    status:
+      description: The status of the participant in the event
+      type: string
+    year1:
+      format: int32
+      type: integer
+    year2:
+      format: int32
+      type: integer
+    CICYear:
+      format: int32
+      type: integer
+    CISRYear:
+      format: int32
+      type: integer
+    CRMYear:
+      format: int32
+      type: integer
+    CSRMYear:
+      format: int32
+      type: integer
+CourseHistory:
+  type: object
+  properties:
+    eventCode:
+      type: string
+    eventDate:
+      type: string
+    eventState:
+      type: string
+    status:
+      type: string
+    designationType:
+      type: string
+    description:
+      type: string
+ParticipantForm:
+  type: object
+  description: The data form used to create a new participant or update the core participant data
+  properties:
+    resourcesMagazine:
+      type: object
+      properties:
+        printedVersion:
+          description: If true the participant wishes to recieve a printed version of resources magazine.
+          type: boolean
+        authorized:
+          description: If true the participant is authorized to view resources magazine.
+          type: boolean
+    participantId:
+      format: int32
+      type: integer
+    username:
+      type: string
+    email:
+      type: string
+#      pattern: ^(?("")("".+?""@)|(([0-9a-zA-Z]((\.(?!\.))|[-!#\$%&'\*\+/=\?\^`\{\}\|~\w])*)(?<=[0-9a-zA-Z])@))(?(\[)(\[(\d{1,3}\.){3}\d{1,3}\])|(([0-9a-zA-Z][-\w]*[0-9a-zA-Z]\.)+[a-zA-Z]{2,6}))$
+    gender:
+      type: string
+      enum:
+        - Female
+        - Male
+        - Not Specified
+    prefix:
+      type: string
+      default: 'null'
+      enum:
+      - 'null'
+      - Ms
+      - Mr
+      - Mrs
+      - Lic
+      - Dr
+      - Ing
+      - Sr
+      - C.P
+      - Act
+      - Sra
+      - Srta
+    firstName:
+      type: string
+      pattern: ^[a-zA-Z''-'\s]{1,40}$
+    middleName:
+      type: string
+      pattern: ^[a-zA-Z''-'\s]{1,40}$
+    lastName:
+      type: string
+      pattern: ^[a-zA-Z''-'\s]{1,40}$
+    suffix:
+      type: string
+      enum:
+      -  'null'
+      -  Jr.
+      -  III
+      -  Sr.
+      -  II
+      -  IV
+      -  Esq.
+      -  V
+      -  VI
+    namePreference:
+      type: string
+    birthday:
+      format: date
+      type: string
+    licenses:
+      type: array
+      items:
+        $ref: '#/definitions/License'
+    nationalProducerNumber:
+      format: int32
+      type: integer
+    otherDesignations:
+      type: array
+      items:
+        type: string
+    shippingAddress:
+      $ref: '#/definitions/Address'
+    billingAddress:
+      $ref: '#/definitions/Address'
+    businessPhone:
+      type: string
+    homePhone:
+      type: string
+    professionalFocus:
+      type: string
+      enum:
+      - Claims
+      - Customer Service
+      - Finance Accounting
+      - Human Resources
+      - Legal
+      - Marketing
+      - Operations
+      - Other
+      - Risk Management
+      - Safety and Loss Control
+      - Sales
+      - Training and Education
+      - Underwriting
+    employerDescription:
+      type: string
+      enum:
+      - School or School District
+      - Association
+      - Financial Institution
+      - Government Agency
+      - Insurance Agent
+      - Insurance Carrier
+      - Non-Insurance Organization
+      - Other
+      - Presently Unemployed
+      - University or College
+    employerName:
+      type: string
+    numberSupervised:
+      type: string
+      enum:
+      - Zero
+      - 1 to 10
+      - 11 to 25
+      - More than 26
+ICEForm:
+  type: object
+  title: In Case of Emergency Form
+  description: The form containing the emergency information for a participant
+  properties:
+    participantName:
+      format: int32
+      type: integer
+    eventAttending:
+      type: string
+    eventAddressType:
+      type: string
+      enum:
+      - Conference Hotel
+      - Other Hotel or Residence
+    address:
+      $ref: '#/definitions/Address'
+    phoneNumber:
+      type: string
+    emergencyContact:
+      type: object
+      description: The emergency contact for the participant.
+      properties:
+        fullName:
+          type: string
+        relationship:
+          description: The relationship the participant has to the emergency contact, such as father, son, friend, et cetera.
+          type: string
+        address:
+          $ref: '#/definitions/Address'
+        phoneNumber:
+          type: string
+        medicationAllergies:
+          type: array
+          description: An array of medications the participant is allergic too.
+          items:
+            type: string
+
+SuggestedCourses:
+  type: object
+  properties:
+    participantId:
+      format: int32
+      type: integer
+    program:
+      type: string
+    formalDate:
+      type: string
+    city:
+      type: string
+    state:
+      type: string
+    agendaPath:
+      type: string
+    travelDest:
+      type: string
+    regPath:
+      type: string
+    link:
+      type: string
+    price:
+      format: double
+      type: number
+    eventCode:
+      type: string
+    designations:
+      type: string
+    courseLinks:
+      type: string
+    startDate:
+      format: date-time
+      type: string
+    programDesc:
+      type: string
+SuggestedPublications:
+  type: object
+  properties:
+    inventoryId:
+      type: string
+    series:
+      type: string
+    title:
+      type: string
+    description:
+      type: string
+    price:
+      type: string
+    pages:
+      type: string
+    image:
+      type: string
+    finRsn:
+      format: int32
+      type: integer
+    designation:
+      type: string
+
+
+

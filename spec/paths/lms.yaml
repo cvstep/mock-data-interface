@@ -1,0 +1,103 @@
+/participants/{participantId}/affidavit:
+  post:
+    tags:
+    - Learning Management System
+    security:
+    - logonTicket: []
+    summary: Create affidavit in archive by participantId
+    operationId: postAffidavit
+    consumes:
+    - application/json
+    - application/x-www-form-urlencoded
+    produces:
+    - application/json
+    parameters:
+    - $ref: '#/parameters/participantId'
+    - name: affidavitForm
+      in: body
+      required: true
+      schema:
+        $ref: '#/definitions/Affdavit'
+    responses:
+      200:
+        description: OK
+        schema:
+          type: object
+      default:
+        description: OK
+        schema:
+          $ref: '#/definitions/Default'
+/events/webinars:
+  get:
+    tags:
+    - Webinar
+    - Learning Management System
+    summary: Get current webinar sessions
+    description: |
+      This function returns the list of webinar sessions for current and future
+      webinars
+    operationId: getWebinarSessions
+    consumes: []
+    produces:
+    - application/json
+    responses:
+      '200':
+        description: OK
+        schema:
+          $ref: '#/definitions/WebinarSessions'
+      default:
+        description: OK
+        schema:
+          $ref: '#/definitions/Default'
+/events/webinars/scores:
+  post:
+    tags:
+      - Webinar
+      - Learning Management System
+    summary: Create webinar scores for registrationId
+    description: Save webinar scores
+    operationId: postWebinarScores
+    consumes:
+      - application/json
+      - application/x-www-form-urlencoded
+    produces:
+      - application/json
+    parameters:
+    - name: WBScores
+      in: body
+      required: true
+      schema:
+        $ref: '#/definitions/WBScores'
+    responses:
+      '200':
+        description: OK
+      default:
+        description: OK
+        schema:
+          $ref: '#/definitions/Default'
+/events/online/scores:
+  post:
+    tags:
+    - Learning Management System
+    summary: Post self-paced course grades
+    description: Post Self-paced Courses
+    operationId: postOLScores
+    consumes: []
+    produces:
+    - application/json
+    - application/x-www-form-urlencoded
+    parameters:
+    - name: OLScores
+      in: body
+      required: true
+      schema:
+        $ref: '#/definitions/OLScores'
+    responses:
+      200:
+        description: OK
+        schema:
+          type: object
+      default:
+        description: OK
+        schema:
+          $ref: '#/definitions/Default'

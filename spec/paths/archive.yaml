@@ -1,0 +1,105 @@
+
+/participants/{participantId}/archive-keywords:
+  get:
+    tags:
+      - Archive
+    security:
+    - logonTicket: []
+    summary: Get distinct archive keywords by participantId
+    operationId: getArchiveKeywords
+    consumes: []
+    produces:
+      - application/json
+    parameters:
+    - $ref: '#/parameters/participantId'
+    responses:
+      200:
+        description: OK
+        schema:
+          $ref: '#/definitions/Keywords'
+      default:
+        description: OK
+        schema:
+          $ref: '#/definitions/Default'
+/participants/{participantId}/archive:
+  get:
+    tags:
+      - Archive
+    security:
+    - logonTicket: []
+    summary: Get archive strings by participantId
+    operationId: getArchive
+    consumes: []
+    produces:
+    - application/json
+    parameters:
+    - $ref: '#/parameters/participantId'
+    - name: pageSize
+      in: query
+      description: The size of a page to return
+      required: true
+      default: 10
+      minimum: 1
+      maximum: 100
+      type: integer
+      format: int32
+    - name: pageNumber
+      in: query
+      description: The page number to return
+      required: true
+      default: 1
+      type: integer
+      format: int32
+    responses:
+      200:
+        description: OK
+        schema:
+          type: array
+          items:
+            type: string
+      default:
+        description: OK
+        schema:
+          $ref: '#/definitions/Default'
+  post:
+    tags:
+      - Archive
+    security:
+    - logonTicket: []
+    summary: Create document in participantId archive
+    operationId: postArchive
+    consumes:
+    - multipart/form-data
+    produces:
+    - application/json
+    parameters:
+    - $ref: '#/parameters/participantId'
+    - name: file
+      in: formData
+      description: Archive File
+      required: true
+      type: file
+    - name: title
+      in: formData
+      description: File title
+      required: true
+      type: string
+    - name: eventCode
+      in: formData
+      description: Archive File
+      required: true
+      type: string
+    - name: internalPath
+      in: formData
+      description: path
+      required: true
+      type: string
+    responses:
+      200:
+        description: OK
+        schema:
+          type: object
+      default:
+        description: OK
+        schema:
+          $ref: '#/definitions/Default'

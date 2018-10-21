@@ -1,0 +1,286 @@
+License:
+  type: object
+  required:
+  - type
+  - number
+  properties:
+    number:
+      format: int32
+      type: integer
+      maximum: 16
+    state:
+      type: string
+    name:
+      type: string
+    type:
+      type: string
+      enum:
+      - NPN
+      - LIC
+      - ENTITY
+      - SYSID
+      - OIC
+      - ADJUSTER
+
+Address:
+  type: object
+  required:
+    - line1
+    - city
+    - country
+    - type
+  properties:
+    line1:
+      type: string
+    line2:
+      type: string
+    city:
+      type: string
+    state:
+      type: string
+    country:
+      type: string
+    countryCode:
+        type: string
+    zip:
+      type: string
+    type:
+      type: string
+      enum:
+      - home
+      - billing
+      - po
+
+
+UserPassword:
+  type: object
+  properties:
+    oldPassword:
+      type: string
+    newPassword:
+      type: string
+
+
+RegStatus:
+  type: object
+  properties:
+    participantId:
+      format: int32
+      type: integer
+    expiration:
+      format: date-time
+      type: string
+    duesSku:
+      type: string
+    duesAmount:
+      format: double
+      type: number
+    registered:
+      format: int32
+      type: integer
+    classFull:
+      format: int32
+      type: integer
+    notDesignated:
+      format: int32
+      type: integer
+    ceRequested:
+      format: int32
+      type: integer
+    manualCE:
+      format: int32
+      type: integer
+    ceRequest:
+      $ref: '#/definitions/CERequestFull'
+    ceInfoCol:
+      type: array
+      items:
+        $ref: '#/definitions/CEInfoType'
+
+
+
+
+
+CEGuides:
+  type: object
+  properties:
+    programCode:
+      type: string
+    state:
+      type: string
+    designation:
+      type: string
+    title:
+      type: string
+    hours:
+      format: double
+      type: number
+    type:
+      type: string
+
+Certificate:
+  type: object
+  properties:
+    eventCode:
+      type: string
+    license:
+      $ref: '#/definitions/License'
+    regCeDeclined:
+      format: int32
+      type: integer
+
+
+ExamReview:
+  type: object
+  properties:
+    instituteLocation:
+      type: string
+    address:
+      $ref: '#/definitions/Address'
+    company:
+      type: string
+    title:
+      type: string
+    businessPhone:
+      type: string
+    homePhone:
+      type: string
+    licenseType:
+      type: string
+    email:
+      type: string
+    firstName:
+      type: string
+    lastName:
+      type: string
+    educationConsultant:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        participantId:
+          format: int32
+          type: integer
+    designation:
+      type: string
+    examNumber:
+      type: string
+    score:
+      format: int32
+      type: integer
+    eventCutoff:
+      format: int32
+      type: integer
+    passRatio:
+      type: string
+    examReceived:
+      type: string
+    courseHistory:
+      type: array
+      items:
+        $ref: '#/definitions/CourseHistory'
+
+ScheduleRequest:
+  type: object
+  properties:
+    zip:
+      type: string
+    miles:
+      format: int32
+      type: integer
+    programCodes:
+      $ref: '#/definitions/ProgramCodes'
+
+CERequest:
+  type: object
+  properties:
+    firstName:
+      type: string
+    lastName:
+      type: string
+    license:
+      $ref: '#/definitions/License'
+
+
+
+ProgramCodes:
+  type: array
+  items:
+    type: string
+
+CERequestFull:
+  type: object
+  properties:
+    registrationId:
+      type: string
+    feeAssessed:
+      format: int32
+      type: integer
+    typeId:
+      format: int32
+      type: integer
+    declinedChoice:
+      format: int32
+      type: integer
+    license:
+      $ref: '#/definitions/License'
+    requestTypes:
+      type: array
+      items:
+        $ref: '#/definitions/CEShortType'
+CEShortType:
+  type: object
+  properties:
+    typeId:
+      format: int64
+      type: integer
+    licenseType:
+      type: string
+CEInfoType:
+  type: object
+  properties:
+    state:
+      type: string
+    licenseLabel:
+      type: string
+    typeCol:
+      type: array
+      items:
+        $ref: '#/definitions/CETypeType'
+
+CETypeType:
+  type: object
+  properties:
+    licenseType:
+      type: string
+    typeId:
+      format: int64
+      type: integer
+    hours:
+      format: int64
+      type: integer
+    units:
+      format: int64
+      type: integer
+    price:
+      format: float
+      type: number
+    exclusive:
+      format: int32
+      type: integer
+
+Default:
+  description: Default
+  type: object
+  required:
+    - message
+    - code
+  properties:
+    message:
+      type: string
+    code:
+      type: integer
+      minimum: 100
+      maximum: 600

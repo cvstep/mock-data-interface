@@ -1,0 +1,86 @@
+swagger: '2.0'
+info:
+  $ref: ./info.yaml
+basePath: '/'
+produces:
+- application/json
+consumes:
+- application/json
+schemes:
+  - http
+#################################################
+#                  Parameters                   #
+#################################################
+parameters:
+  $ref: './parameters.yaml'
+#################################################
+#                  Tags                         #
+#################################################
+tags:
+  - name: Authentication
+    description: ''
+  - name: Participant
+    description: ''
+  - name: Event
+    description: ''
+  - name: Learning Management System
+    description: ''
+  - name: Continuing Education
+    description: ''
+  - name: Webinar
+    description: ''
+  - name: Archive
+    description: ''
+  - name: Static
+    description: ''
+  - name: Magento
+    description: ''
+  - name: Marketing Cloud
+    description: ''
+
+#################################################
+#                  Responses                    #
+#################################################
+responses:
+  $ref: ./responses.yaml
+#################################################
+#                  externalDocs                 #
+#################################################
+externalDocs:
+  description: Find more info here
+  url: http://www.scic.com
+#################################################
+#                  Security                     #
+#################################################
+securityDefinitions:
+  # basicAuth:
+  #   type: basic
+  #   description: |
+  #     HTTPS Basic Authentication. Should only be over `HTTPS`
+  #     ** User Name and Password**
+  #     * User Name: `user`
+  #     * Password: `pass`
+  logonTicket:
+    x-authorize: 'security/logonTicket.js'
+    type: apiKey
+    in: query
+    name: logonTicket
+    #scopes:
+    #  basic: To read any and all data related to a user
+# securityDefinitions:
+#   oauth:
+#   type: oauth2
+#   flow: implicit
+#   authorizationUrl: https://twitter.com/oauth/authorize/?client_id=CLIENT-ID&redirect_uri=REDIRECT-URI&response_type=token
+#   scopes:
+#     basic: |
+# security:
+#   - oauth:
+#   - basic
+#################################################
+#                Paths                          #
+#################################################
+paths:
+  $ref: ./paths.yaml
+definitions:
+  $ref: ./definitions.yaml

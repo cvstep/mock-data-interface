@@ -1,0 +1,116 @@
+Affdavit:
+  type: object
+  properties:
+    eventRegId:
+      format: int32
+      type: integer
+    eventCode:
+      type: string
+    courseDate:
+      type: string
+    examDate:
+      type: string
+    examStartTime:
+      type: string
+    examEndTime:
+      type: string
+    examAdress:
+      $ref: '#/definitions/Address'
+    courseProvider:
+      type: string
+    courseTitle:
+      type: string
+    state:
+      type: string
+    witness:
+      $ref: '#/definitions/AffidavitWitness'
+    student:
+      $ref: '#/definitions/AffidavitStudent'
+    proctor:
+      $ref: '#/definitions/AffidavitProctor'
+AffidavitWitness:
+  type: object
+  properties:
+    address:
+      $ref: '#/definitions/Address'
+    phone:
+      type: string
+    license:
+      type: string
+    signature:
+      type: string
+AffidavitProctor:
+  type: object
+  properties:
+    address:
+      $ref: '#/definitions/Address'
+    agentRelate:
+      type: string
+    company:
+      type: string
+    dayTimePhone:
+      type: string
+    dLnum:
+      type: string
+    dLstate:
+      type: string
+    email:
+      type: string
+    employer:
+      type: string
+    firstName:
+      type: string
+    howText:
+      type: string
+    init1:
+      type: string
+    init2:
+      type: string
+    knowStudent:
+      type: string
+    lastName:
+      type: string
+    licenseNum:
+      type: string
+    monitorAppNum:
+      type: string
+    monitorType:
+      type: string
+    monitorTypeOther:
+      type: string
+    notCompleted:
+      type: string
+    notEmployee:
+      type: string
+    notRelated:
+      type: string
+    notSuper:
+      type: string
+    signature:
+      type: string
+    title:
+      type: string
+AffidavitStudent:
+  type: object
+  properties:
+    id:
+      type: string
+    participantId:
+      format: int32
+      type: integer
+    address:
+      $ref: '#/definitions/Address'
+    businessPhone:
+      type: string
+    homePhone:
+      type: string
+    firstName:
+      type: string
+    lastName:
+      type: string
+    last4ssn:
+      type: string
+    signature:
+      type: string
+    license:
+      $ref: '#/definitions/License'

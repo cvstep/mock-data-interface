@@ -1,0 +1,114 @@
+/events:
+  get:
+    tags:
+    - Event
+    summary: Get all events
+    operationId: getEvents
+    consumes:
+    - application/json
+    - application/x-www-form-urlencoded
+    produces:
+    - application/json
+    parameters:
+    - name: pageSize
+      in: query
+      description: The size of a page to return
+      required: true
+      default: 20
+      minimum: 1
+      maximum: 100
+      type: integer
+      format: int32
+    - name: pageNumber
+      in: query
+      description: The page number to return
+      required: true
+      default: 1
+      type: integer
+      format: int32
+    - name: request
+      in: body
+      description: JSON formatted search criteria
+      required: true
+      schema:
+        $ref: '#/definitions/ScheduleRequest'
+    responses:
+      200:
+        description: OK
+        schema:
+          $ref: '#/definitions/Events'
+
+/events/{eventCode}:
+  get:
+    tags:
+    - Event
+    summary: Get event data by eventCode
+    operationId: getEvent
+    consumes:
+    - application/json
+    produces:
+    - application/json
+    parameters:
+    - $ref: '#/parameters/eventCode'
+    responses:
+      200:
+        description: OK
+        schema:
+          $ref: '#/definitions/Event'
+
+/events/{eventCode}/seats:
+  get:
+    tags:
+    - Event
+    summary: Get number of seats available by eventCode
+    operationId: getEventSeatsInfo
+    consumes: []
+    produces:
+    - application/json
+    parameters:
+    - $ref: '#/parameters/eventCode'
+    responses:
+      200:
+        description: OK
+        schema:
+          type: integer
+          format: int32
+/events/{eventCode}/waitlist/{participantId}:
+  post:
+    tags:
+    - Event
+    summary: Create a waitlist entry for user by eventCode
+    operationId: postEventWaitlist
+    consumes:
+    - application/json
+    - application/x-www-form-urlencoded
+    produces:
+    - application/json
+    parameters:
+    - $ref: '#/parameters/participantId'
+    - $ref: '#/parameters/eventCode'
+    responses:
+      200:
+        description: OK
+
+/events/{eventCode}/ce:
+  get:
+    tags:
+    - Event
+    summary: Get continuing education approvals by eventCode filtered by state
+    operationId: getEventCE
+    consumes: []
+    produces:
+    - application/json
+    parameters:
+    - $ref: '#/parameters/eventCode'
+    - name: state
+      in: query
+      description: State
+      required: true
+      type: string
+    responses:
+      200:
+        description: OK
+        schema:
+          $ref: '#/definitions/EventCeApproval'
