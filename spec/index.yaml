@@ -7,6 +7,7 @@ produces:
 consumes:
 - application/json
 schemes:
+  - https
   - http
 #################################################
 #                  Parameters                   #

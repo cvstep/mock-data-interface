@@ -21,7 +21,6 @@ info:
   contact:
     name: TNA Web Team
     url: 'http://www.scic.com'
-    email: marketing@scic.com
   license:
     name: UNLICENSED
     url: 'http://www.scic.com'
@@ -31,6 +30,7 @@ produces:
 consumes:
   - application/json
 schemes:
+  - https
   - http
 parameters:
   participantId:
