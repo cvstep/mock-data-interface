@@ -22,7 +22,6 @@
   "description": "Data services for The National Alliance web assets",
   "devDependencies": {
     "eslint": "^3.13.1",
-    "oracledb": "^1.12.2",
     "generator-swaggerize": "^3.1.0",
     "grunt": "^1.0.1",
     "grunt-azure-deploy": "^1.0.2",
